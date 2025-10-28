@@ -1,32 +1,45 @@
-import React from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
-import { IDevs } from '@/interfaces/IDevs';
+import React from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 
-type Props = {
-  nome: string;
-  data_fundacao?: string;
-  jogos_desenvolvidos?: string;
-  image?: string;
-  onPress?: () => void;
+export type GameCardProps = { 
+  title: string; 
+  price: string; 
+  image: string 
 };
 
-export default function CardDev({ nome, data_fundacao, jogos_desenvolvidos, image, onPress }: Props) {
+export default function GameCard({ title, price, image }: GameCardProps) {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      {image ? <Image source={{ uri: image }} style={styles.image} /> : <View style={styles.placeholder}><Text>🏢</Text></View>}
+    <TouchableOpacity style={styles.card}>
+      <Image source={{ uri: image }} style={styles.image} />
       <View style={styles.info}>
-        <Text style={styles.title}>{nome}</Text>
-        {data_fundacao ? <Text style={styles.subtitle}>Fundada: {data_fundacao}</Text> : null}
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.price}>R$ {price}</Text>
       </View>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: '#1f1f1f', borderRadius: 12, overflow: 'hidden', marginBottom: 12 },
-  image: { width: '100%', height: 140 },
-  placeholder: { width: '100%', height: 140, backgroundColor: '#333', alignItems: 'center', justifyContent: 'center' },
-  info: { padding: 12 },
-  title: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  subtitle: { color: '#ccc', fontSize: 12, marginTop: 4 },
+  card: { 
+    backgroundColor: "#1f1f1f", 
+    borderRadius: 12, 
+    overflow: "hidden", 
+    marginBottom: 20 
+  },
+  image: { 
+    width: "100%", 
+    height: 200 
+  },
+  info: { 
+    padding: 15 
+  },
+  title: { 
+    color: "#fff", 
+    fontSize: 18, 
+    fontWeight: "bold" 
+  },
+  price: { 
+    color: "#00FF88", 
+    marginTop: 4 
+  },
 });
