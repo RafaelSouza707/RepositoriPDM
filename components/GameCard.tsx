@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 export type GameCardProps = { 
   title: string; 
   price: string; 
-  image: string 
+  image: string
 };
 
 export default function GameCard({ title, price, image }: GameCardProps) {

@@ -13,7 +13,7 @@ type Props = {
 export default function CardDev({ nome, data_fundacao, jogos_desenvolvidos, image, onPress }: Props) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      {image ? <Image source={{ uri: image }} style={styles.image} /> : <View style={styles.placeholder}><Text>🏢</Text></View>}
+      {image ? <Image source={{ uri: image }} style={styles.image} /> : <View style={styles.placeholder}><Text></Text></View>}
       <View style={styles.info}>
         <Text style={styles.title}>{nome}</Text>
         {data_fundacao ? <Text style={styles.subtitle}>Fundada: {data_fundacao}</Text> : null}

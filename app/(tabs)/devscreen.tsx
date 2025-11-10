@@ -7,6 +7,8 @@ import ModalScreen from '@/app/modal-dev';
 import { dataDevs } from '@/src/data/devs';
 import { ThemedView } from '@/components/themed-view';
 import CardDev from '@/components/CardDev';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function DevScreen() {
   const [devs, setDevs] = useState<IDevs[]>([]);
@@ -14,8 +16,35 @@ export default function DevScreen() {
   const [selectedDev, setSelectedDev] = useState<IDevs | undefined>(undefined);
 
   useEffect(() => {
-    setDevs(dataDevs);
+    loadDevs();
   }, []);
+
+  const loadDevs = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('@app_data_devs');
+      if (saved) {
+        setDevs(JSON.parse(saved));
+        console.log('Dados carregados do AsyncStorage');
+      } else {
+        await AsyncStorage.setItem('@app_data_devs', JSON.stringify(dataDevs));
+        setDevs(dataDevs);
+        console.log('Dados salvos no AsyncStorage');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados iniciais: ', error);
+    }
+  };
+
+  const saveDev = async (novoDev: IDevs) => {
+    try {
+      const jsonDev = await AsyncStorage.getItem('@app_data_devs');
+      const listaDevs = jsonDev ? JSON.parse(jsonDev) : [];
+      listaDevs.push(novoDev);
+      await AsyncStorage.setItem('@app_data_devs', JSON.stringify(listaDevs));
+    } catch (error) {
+      console.error('Erro ao salvar: ', error);
+    }
+  } 
 
   const onAdd = (
     nome: string,
@@ -32,7 +61,10 @@ export default function DevScreen() {
         jogos_desenvolvidos,
         image,
       };
-      setDevs([...devs, newDev]);
+      const updateDevs = [...devs, newDev];
+      setDevs(updateDevs);
+      saveDev(newDev);
+      setModalVisible(false);
     } else {
       const updated = devs.map((dev) =>
         dev.id === id
