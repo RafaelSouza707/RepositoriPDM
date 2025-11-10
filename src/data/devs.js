@@ -2,7 +2,7 @@ export const dataDevs = [
     {
         id: 1,
         nome: "Empresa 1",
-        data_fundacao: "1990/10/01",
+        date_fundacao: "1990/10/01",
         jogos_desenvolvidos: [ 
             "Jogos 1", "Jogos 2"
         ],

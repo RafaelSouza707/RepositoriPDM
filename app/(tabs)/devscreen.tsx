@@ -22,13 +22,16 @@ export default function DevScreen() {
   const loadDevs = async () => {
     try {
       const saved = await AsyncStorage.getItem('@app_data_devs');
+
       if (saved) {
         setDevs(JSON.parse(saved));
         console.log('Dados carregados do AsyncStorage');
+
       } else {
         await AsyncStorage.setItem('@app_data_devs', JSON.stringify(dataDevs));
         setDevs(dataDevs);
         console.log('Dados salvos no AsyncStorage');
+
       }
     } catch (error) {
       console.error('Erro ao carregar dados iniciais: ', error);
@@ -41,38 +44,46 @@ export default function DevScreen() {
       const listaDevs = jsonDev ? JSON.parse(jsonDev) : [];
       listaDevs.push(novoDev);
       await AsyncStorage.setItem('@app_data_devs', JSON.stringify(listaDevs));
+
     } catch (error) {
       console.error('Erro ao salvar: ', error);
     }
   } 
 
   const onAdd = (
+
     nome: string,
-    data_fundacao: string,
+    date_fundacao: string,
     jogos_desenvolvidos: string,
     image: string,
     id?: number
+
   ) => {
+
     if (!id || id <= 0) {
       const newDev: IDevs = {
         id: devs.length + 1,
         nome,
-        data_fundacao,
+        date_fundacao,
         jogos_desenvolvidos,
         image,
       };
+
       const updateDevs = [...devs, newDev];
       setDevs(updateDevs);
       saveDev(newDev);
       setModalVisible(false);
+      
     } else {
       const updated = devs.map((dev) =>
         dev.id === id
-          ? { ...dev, nome, data_fundacao, jogos_desenvolvidos, image }
+          ? { ...dev, nome, date_fundacao, jogos_desenvolvidos, image }
           : dev
       );
+
       setDevs(updated);
     }
+    
     setModalVisible(false);
     setSelectedDev(undefined);
   };
@@ -117,7 +128,7 @@ export default function DevScreen() {
           <CardDev
             key={item.id}
             nome={item.nome}
-            data_fundacao={item.data_fundacao}
+            data_fundacao={item.date_fundacao}
             jogos_desenvolvidos={item.jogos_desenvolvidos}
             image={item.image}
             onPress={() => openEditModal(item)}

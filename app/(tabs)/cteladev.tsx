@@ -8,10 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ctelaModal() {
   const [nome, setNome] = useState('');
-  const [data_fundacao, setData_fundacao] = useState('');
+  const [date_fundacao, setDate_fundacao] = useState('');
   const [jogos_desenvolvidos, setJogos_desenvolvidos] = useState('');
   const [image, setImage] = useState('');
   const [id, setId] = useState<number>(0);
+  const [devs, setDevs] = useState('');
 
   const handleAdd = async() => {
     try {
@@ -26,7 +27,7 @@ export default function ctelaModal() {
       const newDev: IDevs = {
         id: devs.length + 1,
         nome,
-        data_fundacao,
+        date_fundacao,
         jogos_desenvolvidos,
         image,
       };
@@ -37,7 +38,7 @@ export default function ctelaModal() {
       Alert.alert('Sucesso', 'Nova desenvolvedora adicionada!');
 
       setNome('');
-      setData_fundacao('');
+      setDate_fundacao('');
       setJogos_desenvolvidos('');
       setImage('');
     } catch (error) {
@@ -48,7 +49,7 @@ export default function ctelaModal() {
 
     const onAdd = (
       nome: string,
-      data_fundacao: string,
+      date_fundacao: string,
       jogos_desenvolvidos: string,
       image: string,
       id?: number
@@ -57,7 +58,7 @@ export default function ctelaModal() {
         const newDev: IDevs = {
           id: devs.length + 1,
           nome,
-          data_fundacao,
+          date_fundacao,
           jogos_desenvolvidos,
           image,
         };
@@ -67,7 +68,7 @@ export default function ctelaModal() {
       } else {
         const updated = devs.map((dev) =>
           dev.id === id
-            ? { ...dev, nome, data_fundacao, jogos_desenvolvidos, image }
+            ? { ...dev, nome, date_fundacao, jogos_desenvolvidos, image }
             : dev
         );
         setDevs(updated);
@@ -96,8 +97,8 @@ export default function ctelaModal() {
                     <TextInput
                       style={styles.boxInput}
                       placeholder="Data de fundação"
-                      value={data_fundacao}
-                      onChangeText={setData_fundacao}
+                      value={date_fundacao}
+                      onChangeText={setDate_fundacao}
                     />
           
                     <TextInput
