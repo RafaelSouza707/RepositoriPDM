@@ -19,6 +19,15 @@ export default function DevScreen() {
     loadDevs();
   }, []);
 
+  const saveDevList = async (list:IDevs[]) => {
+    try {
+      await AsyncStorage.setItem('@app_data_devs', JSON.stringify(list));
+      console.log('Lista de devs salva!')
+    } catch (error) {
+      console.error('Error ao salvar lista', error);
+    }
+  }
+
   const loadDevs = async () => {
     try {
       const saved = await AsyncStorage.getItem('@app_data_devs');
@@ -37,7 +46,7 @@ export default function DevScreen() {
       console.error('Erro ao carregar dados iniciais: ', error);
     }
   };
-
+/*
   const saveDev = async (novoDev: IDevs) => {
     try {
       const jsonDev = await AsyncStorage.getItem('@app_data_devs');
@@ -49,7 +58,7 @@ export default function DevScreen() {
       console.error('Erro ao salvar: ', error);
     }
   } 
-
+*/
   const onAdd = (
 
     nome: string,
@@ -59,6 +68,7 @@ export default function DevScreen() {
     id?: number
 
   ) => {
+    let listToSave: IDevs[];
 
     if (!id || id <= 0) {
       const newDev: IDevs = {
@@ -69,20 +79,26 @@ export default function DevScreen() {
         image,
       };
 
+      listToSave = [...devs, newDev];
+      
+      /*
       const updateDevs = [...devs, newDev];
       setDevs(updateDevs);
       saveDev(newDev);
       setModalVisible(false);
+      */
       
     } else {
-      const updated = devs.map((dev) =>
+      listToSave = devs.map((dev) =>
         dev.id === id
           ? { ...dev, nome, date_fundacao, jogos_desenvolvidos, image }
           : dev
       );
 
-      setDevs(updated);
     }
+    setDevs(listToSave);
+
+    saveDevList(listToSave);
     
     setModalVisible(false);
     setSelectedDev(undefined);
@@ -91,6 +107,9 @@ export default function DevScreen() {
   const onDelete = (id: number) => {
     const filtered = devs.filter((dev) => dev.id !== id);
     setDevs(filtered);
+    
+    saveDevList(filtered)
+
     setModalVisible(false);
     setSelectedDev(undefined);
   };

@@ -1,9 +1,10 @@
 import { StyleSheet, TouchableOpacity, Text, View, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from "../../components/Header";
 import { IDevs } from '@/interfaces/IDevs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
 
 
 export default function ctelaModal() {
@@ -12,7 +13,29 @@ export default function ctelaModal() {
   const [jogos_desenvolvidos, setJogos_desenvolvidos] = useState('');
   const [image, setImage] = useState('');
   const [id, setId] = useState<number>(0);
-  const [devs, setDevs] = useState('');
+  const [devs, setDevs] = useState<IDevs[]>([]); 
+  const [location, setLocation] = useState<Location.LocationObject | null> (null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect( () => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if ( status !== 'granted') {
+        setErrorMsg('Permissao para o acesso a localização foi negado.');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Esperando...';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
 
   const handleAdd = async() => {
     try {
@@ -22,17 +45,21 @@ export default function ctelaModal() {
       }
 
       const saved = await AsyncStorage.getItem('@app_data_devs');
-      const devs: IDevs[] = saved ? JSON.parse(saved) : [];
+      const currentDevs: IDevs[] = saved ? JSON.parse(saved) : [];
+      
+      const newId = currentDevs.length > 0 ? Math.max(...currentDevs.map(d => d.id)) + 1 : 1;
+      
 
       const newDev: IDevs = {
-        id: devs.length + 1,
+        id: newId, 
         nome,
         date_fundacao,
         jogos_desenvolvidos,
         image,
       };
-
-      const updated = [...devs, newDev];
+      
+      const updated = [...currentDevs, newDev];
+      
       await AsyncStorage.setItem('@app_data_devs', JSON.stringify(updated));
 
       Alert.alert('Sucesso', 'Nova desenvolvedora adicionada!');
@@ -54,36 +81,12 @@ export default function ctelaModal() {
       image: string,
       id?: number
     ) => {
-      if (!id || id <= 0) {
-        const newDev: IDevs = {
-          id: devs.length + 1,
-          nome,
-          date_fundacao,
-          jogos_desenvolvidos,
-          image,
-        };
-        const updateDevs = [...devs, newDev];
-        setDevs(updateDevs);
-        saveDev(newDev);
-      } else {
-        const updated = devs.map((dev) =>
-          dev.id === id
-            ? { ...dev, nome, date_fundacao, jogos_desenvolvidos, image }
-            : dev
-        );
-        setDevs(updated);
-      }
     };
-
-  const onCancel = () => {
-  }
-
-  const onDelete = () => {
-  }
 
   return (
       <SafeAreaView style={styles.container}  edges={["top", "left", "right"]}>
-        <Header title="BuyGames"/>  
+        <Header title="BuyGames"/> 
+        <Text>{text}</Text>
           <View style={styles.container}>
                   <View style={styles.boxContainer}>
                     <TextInput
@@ -117,19 +120,9 @@ export default function ctelaModal() {
           
                     <View style={styles.buttonContainer}>
                       <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
-                        <Text style={styles.buttonText}>{id > 0 ? 'Salvar' : 'Adicionar'}</Text>
-                      </TouchableOpacity>
-          
-                      <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
-                        <Text style={styles.buttonText}>Cancelar</Text>
+                        <Text style={styles.buttonText}>Adicionar</Text>
                       </TouchableOpacity>
                     </View>
-          
-                    {id > 0 && (
-                      <TouchableOpacity style={styles.buttonDelete} onPress={() => onDelete(id)}>
-                        <Text style={styles.buttonText}>Excluir</Text>
-                      </TouchableOpacity>
-                    )}
                   </View>
                 </View>
       </SafeAreaView>

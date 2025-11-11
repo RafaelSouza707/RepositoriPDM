@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, TouchableOpacity, Text, View } from 'react-native';
+import { StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
 import Header from '@/components/Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GameCard from '@/components/GameCard';
