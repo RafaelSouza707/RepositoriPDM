@@ -1,6 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
-import { IDevs } from '@/interfaces/IDevs';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type Props = {
   nome: string;
@@ -10,7 +9,7 @@ type Props = {
   onPress?: () => void;
 };
 
-export default function CardDev({ nome, data_fundacao, jogos_desenvolvidos, image, onPress }: Props) {
+export default function CardDev({ nome, data_fundacao, image, onPress }: Props) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       {image ? <Image source={{ uri: image }} style={styles.image} /> : <View style={styles.placeholder}><Text></Text></View>}
